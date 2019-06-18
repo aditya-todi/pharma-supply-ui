@@ -1,0 +1,3 @@
+export const SEND_OTP = "SEND_OTP"
+export const VERIFY_OTP_SUCCESS = "VERIFY_OTP_SUCCESS"
+export const VERIFY_OTP_FAILURE = "VERIFY_OTP_FAILURE"
