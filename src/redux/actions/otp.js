@@ -18,3 +18,15 @@ export const verifyOtpFailure = () => {
         type: types.VERIFY_OTP_FAILURE
     }
 }
+
+export const verifyKeySuccess = () => {
+    return {
+        type: types.VERIFY_KEY_SUCCESS
+    }
+}
+
+export const verifyKeyFailure = () => {
+    return {
+        type: types.VERIFY_KEY_FAILURE
+    }
+}

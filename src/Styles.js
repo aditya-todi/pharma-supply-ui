@@ -49,7 +49,7 @@ const OtpStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     InputDetailsKeyboardActive: {
-        height: 240
+        height: 220
     }
 })
 

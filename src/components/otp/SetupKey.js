@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
-import { KeyboardAvoidingView, View, Keyboard, StyleSheet, Text } from 'react-native'
+import { View, KeyboardAvoidingView, StyleSheet, Keyboard, Image, Text } from 'react-native'
 import { connect } from 'react-redux'
-import { withNavigation } from 'react-navigation'
+import { verifyKeyFailure, verifyKeySuccess } from '../../redux/actions/otp'
 import MobileScreen from '../MobileScreen'
-import { sendOtp } from '../../redux/actions/otp'
 import Header from './Header'
 import Button from '../../containers/Button'
-import TextInputWithButton from '../../containers/TextInputWithButton'
+import OtpBox from '../../containers/OtpBox'
 import Styles from '../../Styles'
 
-class MobileInput extends Component {
+class SetupKey extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            validMobileNumber: false,
-            showWarning: false,
-            number: null,
-            keyboardActive: false
-        }
+            keyboardActive: false,
+            confirmation: false
+        };
     }
 
     componentDidMount() {
@@ -32,7 +29,6 @@ class MobileInput extends Component {
         this.keyboardDidShowListener.remove()
     }
 
-
     _keyboardDidShowHandler = () => {
         this.setState({ keyboardActive: true })
     }
@@ -41,34 +37,23 @@ class MobileInput extends Component {
         this.setState({ keyboardActive: false })
     }
 
-    onChangeTextHandler = (number) => {
-        if ((number.length === 10) && !(isNaN(parseInt(number)))) {
-            this.setState({
-                showWarning: false,
-                validMobileNumber: true,
-                number: number
-            })
-        } else {
-            this.setState({
-                validMobileNumber: false
-            })
+    onPressHandler = () => {
+        let key = this.setupKeyInput.join("").length
+        console.log(this.setupKeyInputRefs)
+        if (this.state.confirmation) this.props.verifyKey(key)
+        else {
+            if (key !== 4) alert('Enter Valid Key')
+            else {
+                alert('Verify Key')
+                this.setState({
+                    confirmation: true
+                })
+            }
         }
     }
 
-    onPressHandler = () => {
-        if (this.state.validMobileNumber) {
-            this.setState({
-                showWarning: false,
-            })
-            this.props.sendOtp(this.state.number)
-            console.log(this.props)
-            this.props.navigation.navigate('OtpInput')
-        } else {
-            this.setState({
-                showWarning: true
-            })
-        }
-    }
+    setupKeyInput = Array(4).fill()
+    setupKeyInputRefs = Array(4).fill()
 
     render() {
         return (
@@ -77,29 +62,34 @@ class MobileInput extends Component {
                     <View>
                         <Header
                             title={this.state.keyboardActive ? null : "Health"}
-                            description="Enter your mobile number"
+                            description="Setup a 4-digit passcode."
+                            info="This code is needed to login again."
                         />
                         <View style={this.state.keyboardActive ? styles.InputKeyboadActive : styles.Input}>
-                            <View>
-                                <Text style={Styles.ContainerStyles.WarningMessage}>
-                                    {this.state.showWarning ? "Please enter valid mobile number" : null}
-                                </Text>
-                                <TextInputWithButton
-                                    style={this.state.showWarning ? { borderColor: "#e34c4c" } : {}}
-                                    placeholder="Enter your mobile number"
-                                    onChangeText={this.onChangeTextHandler}
-                                    keyboardType="numeric"
-                                    default={this.props.number}
-                                />
+                            <View style={{ margin: 'auto' }}>
+                                <Image source={require('../../../assets/bg.png')} style={{ width: 50, height: 50 }} />
+                            </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 16, paddingRight: 16 }}>
+                                {this.setupKeyInput.map((_, index) =>
+                                    <OtpBox
+                                        onChangeText={(num) => this.setupKeyInput[index] = num}
+                                        ref={this.setupKeyInputRefs[index]}
+                                        key={index}
+                                    />
+                                )}
+                            </View>
+                            <View style={{ width: "100%" }}>
+                                <Text style={{
+                                    textAlign: 'center', fontSize: 13, color: "#212873"
+                                }}>{this.state.confirmation ? "Forgot Passcode?" : null}</Text>
                             </View>
                         </View>
                     </View>
                     <Button
-                        title="Continue"
+                        title={this.state.confirmation ? "Login" : "Setup Key"}
                         iconSource={require('../../../assets/right.png')}
                         style={{ marginRight: 12 }}
                         onPress={this.onPressHandler}
-                        disabled={this.state.showWarning}
                     />
                 </KeyboardAvoidingView>
             </MobileScreen>
@@ -118,7 +108,8 @@ const styles = StyleSheet.create({
         ...Styles.OtpStyles.OtpContainerKeyboadActive
     },
     Input: {
-        ...Styles.OtpStyles.InputDetails
+        ...Styles.OtpStyles.InputDetails,
+        justifyContent: 'space-around'
     },
     InputKeyboadActive: {
         ...Styles.OtpStyles.InputDetails,
@@ -127,15 +118,16 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => {
-    return {
-        number: state.otpReducer.number
-    }
+
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        sendOtp: (number) => dispatch(sendOtp(number))
+        verifyKey: (key) => {
+            if (key === "1111") dispatch(verifyKeySuccess())
+            else dispatch(verifyKeyFailure())
+        }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(MobileInput))
+export default connect(null, mapDispatchToProps)(SetupKey);

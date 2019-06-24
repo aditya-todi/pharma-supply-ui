@@ -10,7 +10,12 @@ const Button = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={onPressHandler} disabled={false} activeOpacity={1}>
+        <TouchableOpacity
+            onPress={onPressHandler}
+            disabled={false}
+            // activeOpacity={this.props.disabled ? 0.3 : 1}
+            activeOpacity={1}
+        >
             <View style={{ ...Styles.ContainerStyles.Button, ...props.style }}>
                 <View style={{ flex: 1 }}>
                     <Text style={Styles.ContainerStyles.ButtonText}>{props.title}</Text>

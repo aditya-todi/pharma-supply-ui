@@ -3,7 +3,9 @@ import * as types from '../actionTypes/otp'
 const inittialState = {
     number: null,
     otpVerified: false,
-    verificationErr: false
+    verificationErr: false,
+    keyVerified: false,
+    keyVerificationErr: false
 }
 
 const otpReducer = (state = inittialState, action) => {
@@ -29,6 +31,20 @@ const otpReducer = (state = inittialState, action) => {
                 ...state,
                 otpVerified: false,
                 verificationErr: true
+            }
+        case types.VERIFY_KEY_FAILURE:
+            console.log("IN ACTION FALIURE OTP")
+            return {
+                ...state,
+                keyVerified: false,
+                keyVerificationErr: true
+            }
+        case types.VERIFY_KEY_SUCCESS:
+            console.log("IN ACTION FALIURE OTP")
+            return {
+                ...state,
+                keyVerified: false,
+                keyVerificationErr: false
             }
         default:
             return state

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { KeyboardAvoidingView, View, Keyboard, StyleSheet, Text } from 'react-native'
 import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation'
-import { verifyOtpFailure, verifyOtpSuccess } from '../../redux/actions/otp'
 import MobileScreen from '../MobileScreen'
 import Header from './Header'
 import Button from '../../containers/Button'
@@ -38,25 +37,25 @@ class OtpInput extends Component {
         this.setState({ keyboardActive: false })
     }
 
-    onChangeTextHandler = (text) => {
-    }
-
     onPressHandler = () => {
+        if (this.otpTextInput.join("").length !== 4) alert('Enter Valid OTP')
+        else {
+            alert('OTP Verfied')
+            this.props.navigation.navigate('SetupKey')
+        }
     }
 
     changeMobileNumber = () => {
         this.props.navigation.navigate('MobileInput')
     }
 
-    focusPrevious = (key) => {
-        console.log(key.nativeEvent.key)
-    }
+    // focusPrevious = (key) => {
+    // }
 
-    focusNext = (num) => {
-        console.log(num)
-    }
+    // focusNext = (num, index) => {
+    // }
 
-    otpTextInput = Array(4).fill()
+    otpTextInput = Array(4).fill("")
 
     render() {
         return (
@@ -75,7 +74,6 @@ class OtpInput extends Component {
                                 </Text>
                                 <TextInputWithButton
                                     style={this.state.showWarning ? { borderColor: "#e34c4c" } : {}}
-                                    onChangeText={this.onChangeTextHandler}
                                     keyboardType="numeric"
                                     defaultValue={this.props.number}
                                     editable={false}
@@ -86,8 +84,8 @@ class OtpInput extends Component {
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 16, paddingRight: 16 }}>
                                 {Array(4).fill(0).map((_, index) =>
                                     <OtpBox
-                                        onChangeText={(num) => this.focusNext(num)}
-                                        onKeyPress={(key) => this.focusPrevious(key)}
+                                        onChangeText={(num) => this.otpTextInput[index] = num}
+                                        // onKeyPress={(key) => this.focusPrevious(key)}
                                         key={index}
                                     />
                                 )}
@@ -138,7 +136,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        // verifyOtp: (otp) => 
     }
 }
 

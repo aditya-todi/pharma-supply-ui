@@ -3,9 +3,6 @@ import { View, TextInput } from 'react-native'
 import Styles from '../Styles'
 
 class OtpBox extends Component {
-    componentDidMount() {
-    }
-
     render() {
         return (
             <View style={Styles.ContainerStyles.OtpBox}>
@@ -17,6 +14,8 @@ class OtpBox extends Component {
                         keyboardType="numeric"
                         onChangeText={this.props.onChangeText}
                         onKeyPress={this.props.onKeyPress}
+                        ref={input => this.props.ref = input}
+                        autoCorrect={false}
                     />
                 </View>
                 <View style={Styles.ContainerStyles.OtpBoxBar}></View>
